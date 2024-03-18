@@ -1,0 +1,278 @@
+import csv
+import duplex
+
+input_file = 'data/MAR-2023.txt'
+output_file = 'data/output.csv'
+marcador = "ANDRES ROMANO"
+
+common_information = marcador
+
+accountant_payslips = 0
+
+with open(input_file, "r") as file:
+    for line in file:
+        if common_information in line:
+            accountant_payslips += 1
+
+print(f"O arquivo contém {accountant_payslips} holerites.")
+
+campos = {
+    #Head payslip    
+    "header_company": {"linha": 0, "coluna_inicio": 0, "coluna_fim": 60},
+    "header_local": {"linha": 1, "coluna_inicio": 0, "coluna_fim": 60},
+    "header_cnpj": {"linha": 2, "coluna_inicio": 0, "coluna_fim": 20},
+    "header_competence": {"linha": 2, "coluna_inicio": 45, "coluna_fim": 70},
+    "header_id_employee": {"linha":4, "coluna_inicio": 0, "coluna_fim": 4},
+    "header_employee": {"linha": 4, "coluna_inicio": 5, "coluna_fim": 36},
+    "header_cbo": {"linha": 4, "coluna_inicio": 37, "coluna_fim": 44},
+    "header_department": {"linha": 4, "coluna_inicio": 48, "coluna_fim": 66},
+    "header_page": {"linha": 4, "coluna_inicio": 67, "coluna_fim": 70},
+    "header_post": {"linha": 5, "coluna_inicio": 0, "coluna_fim": 24},
+    "header_admission": {"linha": 5, "coluna_inicio": 34, "coluna_fim": 45},
+    "header_doc_employee": {"linha": 5, "coluna_inicio": 55, "coluna_fim": 70},
+    #Detais payslip
+    "detail_cod1":{"linha": 8, "coluna_inicio": 0, "coluna_fim": 4},
+    "detail_description1":{"linha": 8, "coluna_inicio": 6, "coluna_fim": 34},
+    "detail_ref1":{"linha": 8, "coluna_inicio": 35, "coluna_fim": 43},
+    "detail_credit1":{"linha": 8, "coluna_inicio": 45, "coluna_fim": 55},
+    "detail_debit1":{"linha": 8, "coluna_inicio": 57, "coluna_fim": 67},
+
+    "detail_cod2":{"linha": 9, "coluna_inicio": 0, "coluna_fim": 4},
+    "detail_description2":{"linha": 9, "coluna_inicio": 6, "coluna_fim": 34},
+    "detail_ref2":{"linha": 9, "coluna_inicio": 35, "coluna_fim": 43},
+    "detail_credit2":{"linha": 9, "coluna_inicio": 45, "coluna_fim": 55},
+    "detail_debit2":{"linha": 9, "coluna_inicio": 57, "coluna_fim": 67},
+
+    "detail_cod3":{"linha": 10, "coluna_inicio": 0, "coluna_fim": 4},
+    "detail_description3":{"linha": 10, "coluna_inicio": 6, "coluna_fim": 34},
+    "detail_ref3":{"linha": 10, "coluna_inicio": 35, "coluna_fim": 43},
+    "detail_credit3":{"linha": 10, "coluna_inicio": 45, "coluna_fim": 55},
+    "detail_debit3":{"linha": 10, "coluna_inicio": 57, "coluna_fim": 67},
+
+    "detail_cod4":{"linha": 11, "coluna_inicio": 0, "coluna_fim": 4},
+    "detail_description4":{"linha": 11, "coluna_inicio": 6, "coluna_fim": 34},
+    "detail_ref4":{"linha": 11, "coluna_inicio": 35, "coluna_fim": 43},
+    "detail_credit4":{"linha": 11, "coluna_inicio": 45, "coluna_fim": 55},
+    "detail_debit4":{"linha": 11, "coluna_inicio": 57, "coluna_fim": 67},
+
+    "detail_cod5":{"linha": 12, "coluna_inicio": 0, "coluna_fim": 4},
+    "detail_description5":{"linha": 12, "coluna_inicio": 6, "coluna_fim": 34},
+    "detail_ref5":{"linha": 12, "coluna_inicio": 35, "coluna_fim": 43},
+    "detail_credit5":{"linha": 12, "coluna_inicio": 45, "coluna_fim": 55},
+    "detail_debit5":{"linha": 12, "coluna_inicio": 57, "coluna_fim": 67},
+
+    "detail_cod6":{"linha": 13, "coluna_inicio": 0, "coluna_fim": 4},
+    "detail_description6":{"linha": 13, "coluna_inicio": 6, "coluna_fim": 34},
+    "detail_ref6":{"linha": 13, "coluna_inicio": 35, "coluna_fim": 43},
+    "detail_credit6":{"linha": 13, "coluna_inicio": 45, "coluna_fim": 55},
+    "detail_debit6":{"linha": 13, "coluna_inicio": 57, "coluna_fim": 67},
+
+    "detail_cod7":{"linha": 14, "coluna_inicio": 0, "coluna_fim": 4},
+    "detail_description7":{"linha": 14, "coluna_inicio": 6, "coluna_fim": 35},
+    "detail_ref7":{"linha": 14, "coluna_inicio": 35, "coluna_fim": 43},
+    "detail_credit7":{"linha": 14, "coluna_inicio": 45, "coluna_fim": 55},
+    "detail_debit7":{"linha": 14, "coluna_inicio": 57, "coluna_fim": 67},
+
+    "detail_cod8":{"linha": 15, "coluna_inicio": 0, "coluna_fim": 4},
+    "detail_description8":{"linha": 15, "coluna_inicio": 6, "coluna_fim": 34},
+    "detail_ref8":{"linha": 15, "coluna_inicio": 35, "coluna_fim": 43},
+    "detail_credit8":{"linha": 15, "coluna_inicio": 45, "coluna_fim": 55},
+    "detail_debit8":{"linha": 15, "coluna_inicio": 57, "coluna_fim": 67},
+
+    "detail_cod9":{"linha": 16, "coluna_inicio": 0, "coluna_fim": 4},
+    "detail_description9":{"linha": 16, "coluna_inicio": 6, "coluna_fim": 34},
+    "detail_ref9":{"linha": 16, "coluna_inicio": 35, "coluna_fim": 43},
+    "detail_credit9":{"linha": 16, "coluna_inicio": 45, "coluna_fim": 55},
+    "detail_debit9":{"linha": 16, "coluna_inicio": 57, "coluna_fim": 67},
+
+    "detail_cod10":{"linha": 17, "coluna_inicio": 0, "coluna_fim": 4},
+    "detail_description10":{"linha": 17, "coluna_inicio": 6, "coluna_fim": 34},
+    "detail_ref10":{"linha": 17, "coluna_inicio": 35, "coluna_fim": 43},
+    "detail_credit10":{"linha": 17, "coluna_inicio": 45, "coluna_fim": 55},
+    "detail_debit10":{"linha": 17, "coluna_inicio": 57, "coluna_fim": 67},
+
+    "detail_cod11":{"linha": 18, "coluna_inicio": 0, "coluna_fim": 4},
+    "detail_description11":{"linha": 18, "coluna_inicio": 6, "coluna_fim": 34},
+    "detail_ref11":{"linha": 18, "coluna_inicio": 35, "coluna_fim": 43},
+    "detail_credit11":{"linha": 18, "coluna_inicio": 45, "coluna_fim": 55},
+    "detail_debit11":{"linha": 18, "coluna_inicio": 57, "coluna_fim": 67},
+
+    "detail_cod12":{"linha": 19, "coluna_inicio": 0, "coluna_fim": 4},
+    "detail_description12":{"linha": 19, "coluna_inicio": 6, "coluna_fim": 34},
+    "detail_ref12":{"linha": 19, "coluna_inicio": 35, "coluna_fim": 43},
+    "detail_credit12":{"linha": 19, "coluna_inicio": 45, "coluna_fim": 55},
+    "detail_debit12":{"linha": 19, "coluna_inicio": 57, "coluna_fim": 67},
+
+    "detail_cod13":{"linha": 20, "coluna_inicio": 0, "coluna_fim": 4},
+    "detail_description13":{"linha": 20, "coluna_inicio": 6, "coluna_fim": 34},
+    "detail_ref13":{"linha": 20, "coluna_inicio": 35, "coluna_fim": 43},
+    "detail_credit13":{"linha": 20, "coluna_inicio": 45, "coluna_fim": 55},
+    "detail_debit13":{"linha": 20, "coluna_inicio": 57, "coluna_fim": 67},
+
+    "detail_cod14":{"linha": 21, "coluna_inicio": 0, "coluna_fim": 4},
+    "detail_description14":{"linha": 21, "coluna_inicio": 6, "coluna_fim": 34},
+    "detail_ref14":{"linha": 21, "coluna_inicio": 35, "coluna_fim": 43},
+    "detail_credit14":{"linha": 21, "coluna_inicio": 45, "coluna_fim": 55},
+    "detail_debit14":{"linha": 21, "coluna_inicio": 57, "coluna_fim": 67},
+    
+    "detail_cod15":{"linha": 22, "coluna_inicio": 0, "coluna_fim": 4},
+    "detail_description15":{"linha": 22, "coluna_inicio": 6, "coluna_fim": 34},
+    "detail_ref15":{"linha": 22, "coluna_inicio": 35, "coluna_fim": 43},
+    "detail_credit15":{"linha": 22, "coluna_inicio": 45, "coluna_fim": 55},
+    "detail_debit15":{"linha": 22, "coluna_inicio": 57, "coluna_fim": 67},
+
+    #Bottom payslip
+    "bottom_credit":{"linha": 24, "coluna_inicio": 45, "coluna_fim": 54},
+    "bottom_debit":{"linha": 24, "coluna_inicio": 57, "coluna_fim": 67},
+    "bottom_liquid":{"linha": 26, "coluna_inicio": 57, "coluna_fim": 67},
+    "bottom_message":{"linha": 24, "coluna_inicio": 0, "coluna_fim": 35},
+
+    "bottom_base_salary":{"linha": 28, "coluna_inicio": 0, "coluna_fim": 11},
+    "bottom_base_inss":{"linha": 28, "coluna_inicio": 13, "coluna_fim": 22},
+    "bottom_base_fgts":{"linha": 28, "coluna_inicio": 27, "coluna_fim": 36},
+    "bottom_fgts_month":{"linha": 28, "coluna_inicio": 37, "coluna_fim": 46},
+    "bottom_base_ir":{"linha": 28, "coluna_inicio": 52, "coluna_fim": 61},
+    "bottom_band_ir":{"linha": 28, "coluna_inicio": 62, "coluna_fim": 67},
+    "bottom_dependents_ir":{"linha": 28, "coluna_inicio": 70, "coluna_fim": 71}
+    
+}
+
+with open(input_file, 'r') as file:
+    lines = file.readlines()
+
+with open(output_file, 'w', newline='') as file:
+    writer = csv.writer(file, delimiter=';', quotechar='"', quoting=csv.QUOTE_ALL)
+
+    # write header row
+    header_row = campos.keys()
+    writer.writerow(header_row)
+
+    # iterate over lines to extract payslip data
+    payslip_data = {}
+    for index, line in enumerate(lines):
+        if marcador in line:
+            # extract payslip data
+            #Header
+            payslip_data["header_company"] = lines[index].strip()
+            payslip_data["header_local"] = lines[index + campos["header_local"]["linha"]].strip()[campos["header_local"]["coluna_inicio"]:campos["header_local"]["coluna_fim"]].strip()
+            payslip_data["header_cnpj"] = lines[index + campos["header_cnpj"]["linha"]].strip()[campos["header_cnpj"]["coluna_inicio"]:campos["header_cnpj"]["coluna_fim"]].strip()
+            payslip_data["header_competence"] = lines[index + campos["header_competence"]["linha"]].strip()[campos["header_competence"]["coluna_inicio"]:campos["header_competence"]["coluna_fim"]].strip()
+            payslip_data["header_id_employee"] = lines[index + campos["header_id_employee"]["linha"]].strip()[campos["header_id_employee"]["coluna_inicio"]:campos["header_id_employee"]["coluna_fim"]]
+            payslip_data["header_employee"] = lines[index + campos["header_employee"]["linha"]].strip()[campos["header_employee"]["coluna_inicio"]:campos["header_employee"]["coluna_fim"]]
+            payslip_data["header_cbo"] = lines[index + campos["header_cbo"]["linha"]].strip()[campos["header_cbo"]["coluna_inicio"]:campos["header_cbo"]["coluna_fim"]].strip()            
+            payslip_data["header_department"] = lines[index + campos["header_department"]["linha"]].strip()[campos["header_department"]["coluna_inicio"]:campos["header_department"]["coluna_fim"]].strip()            
+            payslip_data["header_page"] = lines[index + campos["header_page"]["linha"]].strip()[campos["header_page"]["coluna_inicio"]:campos["header_page"]["coluna_fim"]].strip()            
+            payslip_data["header_post"] = lines[index + campos["header_post"]["linha"]].strip()[campos["header_post"]["coluna_inicio"]:campos["header_post"]["coluna_fim"]]         
+            payslip_data["header_admission"] = lines[index + campos["header_admission"]["linha"]].strip()[campos["header_admission"]["coluna_inicio"]:campos["header_admission"]["coluna_fim"]].strip()            
+            payslip_data["header_doc_employee"] = lines[index + campos["header_doc_employee"]["linha"]].strip()[campos["header_doc_employee"]["coluna_inicio"]:campos["header_doc_employee"]["coluna_fim"]].strip()            
+            #Details
+            payslip_data["detail_cod1"] = lines[index + campos["detail_cod1"]["linha"]].strip()[campos["detail_cod1"]["coluna_inicio"]:campos["detail_cod1"]["coluna_fim"]]
+            payslip_data["detail_description1"] = lines[index + campos["detail_description1"]["linha"]].strip()[campos["detail_description1"]["coluna_inicio"]:campos["detail_description1"]["coluna_fim"]]
+            payslip_data["detail_ref1"] = lines[index + campos["detail_ref1"]["linha"]].strip()[campos["detail_ref1"]["coluna_inicio"]:campos["detail_ref1"]["coluna_fim"]]
+            payslip_data["detail_credit1"] = lines[index + campos["detail_credit1"]["linha"]].strip()[campos["detail_credit1"]["coluna_inicio"]:campos["detail_credit1"]["coluna_fim"]]
+            payslip_data["detail_debit1"] = lines[index + campos["detail_debit1"]["linha"]].strip()[campos["detail_debit1"]["coluna_inicio"]:campos["detail_debit1"]["coluna_fim"]]
+            
+            payslip_data["detail_cod2"] = lines[index + campos["detail_cod2"]["linha"]].strip()[campos["detail_cod2"]["coluna_inicio"]:campos["detail_cod2"]["coluna_fim"]]
+            payslip_data["detail_description2"] = lines[index + campos["detail_description2"]["linha"]].strip()[campos["detail_description2"]["coluna_inicio"]:campos["detail_description2"]["coluna_fim"]]
+            payslip_data["detail_ref2"] = lines[index + campos["detail_ref2"]["linha"]].strip()[campos["detail_ref2"]["coluna_inicio"]:campos["detail_ref2"]["coluna_fim"]]
+            payslip_data["detail_credit2"] = lines[index + campos["detail_credit2"]["linha"]].strip()[campos["detail_credit2"]["coluna_inicio"]:campos["detail_credit2"]["coluna_fim"]]
+            payslip_data["detail_debit2"] = lines[index + campos["detail_debit2"]["linha"]].strip()[campos["detail_debit2"]["coluna_inicio"]:campos["detail_debit2"]["coluna_fim"]]
+
+            payslip_data["detail_cod3"] = lines[index + campos["detail_cod3"]["linha"]].strip()[campos["detail_cod3"]["coluna_inicio"]:campos["detail_cod3"]["coluna_fim"]]
+            payslip_data["detail_description3"] = lines[index + campos["detail_description3"]["linha"]].strip()[campos["detail_description3"]["coluna_inicio"]:campos["detail_description3"]["coluna_fim"]]
+            payslip_data["detail_ref3"] = lines[index + campos["detail_ref3"]["linha"]].strip()[campos["detail_ref3"]["coluna_inicio"]:campos["detail_ref3"]["coluna_fim"]]
+            payslip_data["detail_credit3"] = lines[index + campos["detail_credit3"]["linha"]].strip()[campos["detail_credit3"]["coluna_inicio"]:campos["detail_credit3"]["coluna_fim"]]
+            payslip_data["detail_debit3"] = lines[index + campos["detail_debit3"]["linha"]].strip()[campos["detail_debit3"]["coluna_inicio"]:campos["detail_debit3"]["coluna_fim"]]
+
+            payslip_data["detail_cod4"] = lines[index + campos["detail_cod4"]["linha"]].strip()[campos["detail_cod4"]["coluna_inicio"]:campos["detail_cod4"]["coluna_fim"]]
+            payslip_data["detail_description4"] = lines[index + campos["detail_description4"]["linha"]].strip()[campos["detail_description4"]["coluna_inicio"]:campos["detail_description4"]["coluna_fim"]]
+            payslip_data["detail_ref4"] = lines[index + campos["detail_ref4"]["linha"]].strip()[campos["detail_ref4"]["coluna_inicio"]:campos["detail_ref4"]["coluna_fim"]]
+            payslip_data["detail_credit4"] = lines[index + campos["detail_credit4"]["linha"]].strip()[campos["detail_credit4"]["coluna_inicio"]:campos["detail_credit4"]["coluna_fim"]]
+            payslip_data["detail_debit4"] = lines[index + campos["detail_debit4"]["linha"]].strip()[campos["detail_debit4"]["coluna_inicio"]:campos["detail_debit4"]["coluna_fim"]]
+
+            payslip_data["detail_cod5"] = lines[index + campos["detail_cod5"]["linha"]].strip()[campos["detail_cod5"]["coluna_inicio"]:campos["detail_cod5"]["coluna_fim"]]
+            payslip_data["detail_description5"] = lines[index + campos["detail_description5"]["linha"]].strip()[campos["detail_description5"]["coluna_inicio"]:campos["detail_description5"]["coluna_fim"]]
+            payslip_data["detail_ref5"] = lines[index + campos["detail_ref5"]["linha"]].strip()[campos["detail_ref5"]["coluna_inicio"]:campos["detail_ref5"]["coluna_fim"]]
+            payslip_data["detail_credit5"] = lines[index + campos["detail_credit5"]["linha"]].strip()[campos["detail_credit5"]["coluna_inicio"]:campos["detail_credit5"]["coluna_fim"]]
+            payslip_data["detail_debit5"] = lines[index + campos["detail_debit5"]["linha"]].strip()[campos["detail_debit5"]["coluna_inicio"]:campos["detail_debit5"]["coluna_fim"]]
+            
+            payslip_data["detail_cod6"] = lines[index + campos["detail_cod6"]["linha"]].strip()[campos["detail_cod6"]["coluna_inicio"]:campos["detail_cod6"]["coluna_fim"]]
+            payslip_data["detail_description6"] = lines[index + campos["detail_description6"]["linha"]].strip()[campos["detail_description6"]["coluna_inicio"]:campos["detail_description6"]["coluna_fim"]]
+            payslip_data["detail_ref6"] = lines[index + campos["detail_ref6"]["linha"]].strip()[campos["detail_ref6"]["coluna_inicio"]:campos["detail_ref6"]["coluna_fim"]]
+            payslip_data["detail_credit6"] = lines[index + campos["detail_credit6"]["linha"]].strip()[campos["detail_credit6"]["coluna_inicio"]:campos["detail_credit6"]["coluna_fim"]]
+            payslip_data["detail_debit6"] = lines[index + campos["detail_debit6"]["linha"]].strip()[campos["detail_debit6"]["coluna_inicio"]:campos["detail_debit6"]["coluna_fim"]]
+            
+            payslip_data["detail_cod7"] = lines[index + campos["detail_cod7"]["linha"]].strip()[campos["detail_cod7"]["coluna_inicio"]:campos["detail_cod7"]["coluna_fim"]]
+            payslip_data["detail_description7"] = lines[index + campos["detail_description7"]["linha"]].strip()[campos["detail_description7"]["coluna_inicio"]:campos["detail_description7"]["coluna_fim"]]
+            payslip_data["detail_ref7"] = lines[index + campos["detail_ref7"]["linha"]].strip()[campos["detail_ref7"]["coluna_inicio"]:campos["detail_ref7"]["coluna_fim"]]
+            payslip_data["detail_credit7"] = lines[index + campos["detail_credit7"]["linha"]].strip()[campos["detail_credit7"]["coluna_inicio"]:campos["detail_credit7"]["coluna_fim"]]
+            payslip_data["detail_debit7"] = lines[index + campos["detail_debit7"]["linha"]].strip()[campos["detail_debit7"]["coluna_inicio"]:campos["detail_debit7"]["coluna_fim"]]
+            
+            payslip_data["detail_cod8"] = lines[index + campos["detail_cod8"]["linha"]].strip()[campos["detail_cod8"]["coluna_inicio"]:campos["detail_cod8"]["coluna_fim"]]
+            payslip_data["detail_description8"] = lines[index + campos["detail_description8"]["linha"]].strip()[campos["detail_description8"]["coluna_inicio"]:campos["detail_description8"]["coluna_fim"]]
+            payslip_data["detail_ref8"] = lines[index + campos["detail_ref8"]["linha"]].strip()[campos["detail_ref8"]["coluna_inicio"]:campos["detail_ref8"]["coluna_fim"]]
+            payslip_data["detail_credit8"] = lines[index + campos["detail_credit8"]["linha"]].strip()[campos["detail_credit8"]["coluna_inicio"]:campos["detail_credit8"]["coluna_fim"]]
+            payslip_data["detail_debit8"] = lines[index + campos["detail_debit8"]["linha"]].strip()[campos["detail_debit8"]["coluna_inicio"]:campos["detail_debit8"]["coluna_fim"]]
+            
+            payslip_data["detail_cod9"] = lines[index + campos["detail_cod9"]["linha"]].strip()[campos["detail_cod9"]["coluna_inicio"]:campos["detail_cod9"]["coluna_fim"]]
+            payslip_data["detail_description9"] = lines[index + campos["detail_description9"]["linha"]].strip()[campos["detail_description9"]["coluna_inicio"]:campos["detail_description9"]["coluna_fim"]]
+            payslip_data["detail_ref9"] = lines[index + campos["detail_ref9"]["linha"]].strip()[campos["detail_ref9"]["coluna_inicio"]:campos["detail_ref9"]["coluna_fim"]]
+            payslip_data["detail_credit9"] = lines[index + campos["detail_credit9"]["linha"]].strip()[campos["detail_credit9"]["coluna_inicio"]:campos["detail_credit9"]["coluna_fim"]]
+            payslip_data["detail_debit9"] = lines[index + campos["detail_debit9"]["linha"]].strip()[campos["detail_debit9"]["coluna_inicio"]:campos["detail_debit9"]["coluna_fim"]]
+            
+            payslip_data["detail_cod10"] = lines[index + campos["detail_cod10"]["linha"]].strip()[campos["detail_cod10"]["coluna_inicio"]:campos["detail_cod10"]["coluna_fim"]]
+            payslip_data["detail_description10"] = lines[index + campos["detail_description10"]["linha"]].strip()[campos["detail_description10"]["coluna_inicio"]:campos["detail_description10"]["coluna_fim"]]
+            payslip_data["detail_ref10"] = lines[index + campos["detail_ref10"]["linha"]].strip()[campos["detail_ref10"]["coluna_inicio"]:campos["detail_ref10"]["coluna_fim"]]
+            payslip_data["detail_credit10"] = lines[index + campos["detail_credit10"]["linha"]].strip()[campos["detail_credit10"]["coluna_inicio"]:campos["detail_credit10"]["coluna_fim"]]
+            payslip_data["detail_debit10"] = lines[index + campos["detail_debit10"]["linha"]].strip()[campos["detail_debit10"]["coluna_inicio"]:campos["detail_debit10"]["coluna_fim"]]
+            
+            payslip_data["detail_cod11"] = lines[index + campos["detail_cod11"]["linha"]].strip()[campos["detail_cod11"]["coluna_inicio"]:campos["detail_cod11"]["coluna_fim"]]
+            payslip_data["detail_description11"] = lines[index + campos["detail_description11"]["linha"]].strip()[campos["detail_description11"]["coluna_inicio"]:campos["detail_description11"]["coluna_fim"]]
+            payslip_data["detail_ref11"] = lines[index + campos["detail_ref11"]["linha"]].strip()[campos["detail_ref11"]["coluna_inicio"]:campos["detail_ref11"]["coluna_fim"]]
+            payslip_data["detail_credit11"] = lines[index + campos["detail_credit11"]["linha"]].strip()[campos["detail_credit11"]["coluna_inicio"]:campos["detail_credit11"]["coluna_fim"]]
+            payslip_data["detail_debit11"] = lines[index + campos["detail_debit11"]["linha"]].strip()[campos["detail_debit11"]["coluna_inicio"]:campos["detail_debit11"]["coluna_fim"]]
+            
+            payslip_data["detail_cod12"] = lines[index + campos["detail_cod12"]["linha"]].strip()[campos["detail_cod12"]["coluna_inicio"]:campos["detail_cod12"]["coluna_fim"]].strip()
+            payslip_data["detail_description12"] = lines[index + campos["detail_description12"]["linha"]].strip()[campos["detail_description12"]["coluna_inicio"]:campos["detail_description12"]["coluna_fim"]].strip()
+            payslip_data["detail_ref12"] = lines[index + campos["detail_ref12"]["linha"]].strip()[campos["detail_ref12"]["coluna_inicio"]:campos["detail_ref12"]["coluna_fim"]].strip()
+            payslip_data["detail_credit12"] = lines[index + campos["detail_credit12"]["linha"]].strip()[campos["detail_credit12"]["coluna_inicio"]:campos["detail_credit12"]["coluna_fim"]].strip()
+            payslip_data["detail_debit12"] = lines[index + campos["detail_debit12"]["linha"]].strip()[campos["detail_debit12"]["coluna_inicio"]:campos["detail_debit12"]["coluna_fim"]].strip()
+            
+            payslip_data["detail_cod13"] = lines[index + campos["detail_cod13"]["linha"]].strip()[campos["detail_cod13"]["coluna_inicio"]:campos["detail_cod13"]["coluna_fim"]].strip()
+            payslip_data["detail_description13"] = lines[index + campos["detail_description13"]["linha"]].strip()[campos["detail_description13"]["coluna_inicio"]:campos["detail_description13"]["coluna_fim"]].strip()
+            payslip_data["detail_ref13"] = lines[index + campos["detail_ref13"]["linha"]].strip()[campos["detail_ref13"]["coluna_inicio"]:campos["detail_ref13"]["coluna_fim"]].strip()
+            payslip_data["detail_credit13"] = lines[index + campos["detail_credit13"]["linha"]].strip()[campos["detail_credit13"]["coluna_inicio"]:campos["detail_credit13"]["coluna_fim"]].strip()
+            payslip_data["detail_debit13"] = lines[index + campos["detail_debit13"]["linha"]].strip()[campos["detail_debit13"]["coluna_inicio"]:campos["detail_debit13"]["coluna_fim"]].strip()
+            
+            payslip_data["detail_cod14"] = lines[index + campos["detail_cod14"]["linha"]].strip()[campos["detail_cod14"]["coluna_inicio"]:campos["detail_cod14"]["coluna_fim"]].strip()
+            payslip_data["detail_description14"] = lines[index + campos["detail_description14"]["linha"]].strip()[campos["detail_description14"]["coluna_inicio"]:campos["detail_description14"]["coluna_fim"]].strip()
+            payslip_data["detail_ref14"] = lines[index + campos["detail_ref14"]["linha"]].strip()[campos["detail_ref14"]["coluna_inicio"]:campos["detail_ref14"]["coluna_fim"]].strip()
+            payslip_data["detail_credit14"] = lines[index + campos["detail_credit14"]["linha"]].strip()[campos["detail_credit14"]["coluna_inicio"]:campos["detail_credit14"]["coluna_fim"]].strip()
+            payslip_data["detail_debit14"] = lines[index + campos["detail_debit14"]["linha"]].strip()[campos["detail_debit14"]["coluna_inicio"]:campos["detail_debit14"]["coluna_fim"]].strip()
+            
+            payslip_data["detail_cod15"] = lines[index + campos["detail_cod15"]["linha"]].strip()[campos["detail_cod15"]["coluna_inicio"]:campos["detail_cod15"]["coluna_fim"]].strip()
+            payslip_data["detail_description15"] = lines[index + campos["detail_description15"]["linha"]].strip()[campos["detail_description15"]["coluna_inicio"]:campos["detail_description15"]["coluna_fim"]].strip()
+            payslip_data["detail_ref15"] = lines[index + campos["detail_ref15"]["linha"]].strip()[campos["detail_ref15"]["coluna_inicio"]:campos["detail_ref15"]["coluna_fim"]].strip()
+            payslip_data["detail_credit15"] = lines[index + campos["detail_credit15"]["linha"]].strip()[campos["detail_credit15"]["coluna_inicio"]:campos["detail_credit15"]["coluna_fim"]].strip()
+            payslip_data["detail_debit15"] = lines[index + campos["detail_debit15"]["linha"]].strip()[campos["detail_debit15"]["coluna_inicio"]:campos["detail_debit15"]["coluna_fim"]].strip()
+            #Bottom
+            payslip_data["bottom_credit"] = lines[index + campos["bottom_credit"]["linha"]][campos["bottom_credit"]["coluna_inicio"]:campos["bottom_credit"]["coluna_fim"]].strip()
+            payslip_data["bottom_debit"] = lines[index + campos["bottom_debit"]["linha"]][campos["bottom_debit"]["coluna_inicio"]:campos["bottom_debit"]["coluna_fim"]].strip()
+            payslip_data["bottom_liquid"] = lines[index + campos["bottom_liquid"]["linha"]][campos["bottom_liquid"]["coluna_inicio"]:campos["bottom_liquid"]["coluna_fim"]].strip()
+            payslip_data["bottom_message"] = lines[index + campos["bottom_message"]["linha"]][campos["bottom_message"]["coluna_inicio"]:campos["bottom_message"]["coluna_fim"]].strip()
+            payslip_data["bottom_base_salary"] = lines[index + campos["bottom_base_salary"]["linha"]][campos["bottom_base_salary"]["coluna_inicio"]:campos["bottom_base_salary"]["coluna_fim"]].strip()
+            payslip_data["bottom_base_inss"] = lines[index + campos["bottom_base_inss"]["linha"]][campos["bottom_base_inss"]["coluna_inicio"]:campos["bottom_base_inss"]["coluna_fim"]].strip()
+            payslip_data["bottom_base_fgts"] = lines[index + campos["bottom_base_fgts"]["linha"]][campos["bottom_base_fgts"]["coluna_inicio"]:campos["bottom_base_fgts"]["coluna_fim"]].strip()
+            payslip_data["bottom_fgts_month"] = lines[index + campos["bottom_fgts_month"]["linha"]][campos["bottom_fgts_month"]["coluna_inicio"]:campos["bottom_fgts_month"]["coluna_fim"]].strip()
+            payslip_data["bottom_base_ir"] = lines[index + campos["bottom_base_ir"]["linha"]][campos["bottom_base_ir"]["coluna_inicio"]:campos["bottom_base_ir"]["coluna_fim"]].strip()
+            payslip_data["bottom_band_ir"] = lines[index + campos["bottom_band_ir"]["linha"]][campos["bottom_band_ir"]["coluna_inicio"]:campos["bottom_band_ir"]["coluna_fim"]].strip()
+            payslip_data["bottom_dependents_ir"] = lines[index + campos["bottom_dependents_ir"]["linha"]][campos["bottom_dependents_ir"]["coluna_inicio"]:campos["bottom_dependents_ir"]["coluna_fim"]].strip()
+
+            
+            # write payslip data to CSV
+            row = []
+            for campo in header_row:
+                row.append(payslip_data[campo])
+            writer.writerow(row)
+
+duplex.crash()

@@ -1,0 +1,83 @@
+Duplex: de payslips que estão em 1 coluna e irão ser quebrados em 2 colunas para impressão landscape
+
+Gere código python que crie um 2º arquivo csv com o resultado da quebra em duas partes da quantidade de linhas do 1º arquivo csv.  
+O segundo arquivo que deve ser gerado terá o cabeçalho duplicado na mesma linha sendo que a primeira metade terá prefixo A seguido do nome do campos
+e os dados inseridos abaixo e a segunda metade do cabeçaho terá o prefixo B  e os dados resultante outra parte da quebra restante estará abaixo da 
+segunda metade com os dados inseridos abaixo. Todo conteúdo dos cabeçalhos e das linhas são strings.
+Veja um exepmlo do 1º arquivo:
+head_company;employe;salary;credit;debit;liquid
+ACME COMPAMY;Michel;1000,00;1000,00;200,00;800,00
+ACME COMPAMY;Anna;1000,00;1000,00;200,00;800,00
+ACME COMPAMY;Brithney;1000,00;1000,00;200,00;800,00
+ACME COMPAMY;Taylor;1000,00;1000,00;200,00;800,00
+Veja como deve ficar após a quebra em 2 partes
+Ahead_company;Aemploye;Asalary;Acredit;Adebit;Aliquid;Bhead_company;Bemploye;Bsalary;Bcredit;Bdebit;Aliquid
+ACME COMPAMY;Michel;1000,00;1000,00;200,00;800,00;ACME COMPAMY;Brithney;1000,00;1000,00;200,00;800,00
+ACME COMPAMY;Anna;1000,00;1000,00;200,00;800,00;ACME COMPAMY;Taylor;1000,00;1000,00;200,00;800,00
+
+
+
+
+
+
+
+
+
+
+Crie um script Python seguindo essas instruções abaixo.
+O arquivo txt de entrada está em:
+input_file = 'data/MAR-2023.txt'
+O arquivo cvs de saida estará em:
+output_file = 'data/output.csv'
+
+Para saber aonde começa cada holerite uma variavel chamada marcador. Na variável marcador contém o valor que indica aonde começa o holerite a ser lido.
+Após identificar esse marcador iniciar a leitura de cada holerite para extratir as informaçoes e inserir no CSV.
+Enquanto encontrar o valor na variavel marcador, capture os dados dos holerites do arquivo do TXT
+
+Abaixo os campos e suas posições no TXT para ser lido e posteriormente exportado para o CSV.
+campos = {
+    #Head payslip
+    "header_company": {"linha": 0, "coluna_inicio": 0, "coluna_fim": 60},
+    "header_id_employee": {"linha":4, "coluna_inicio": 0, "coluna_fim": 6},
+    "header_employee": {"linha": 4, "coluna_inicio": 7, "coluna_fim": 44},
+    #Detais payslip
+	Na lista que inicia com detail, repita 15 vezes a operação de leitura e exportação para o csv sempre na próxima linha abaixo até terminar a décima quinta repetição cada repetição deve conter no final do nome da chave um núremo referente a repetição.
+    "detail_description":{"linha": 8, "coluna_inicio": 7, "coluna_fim": 25},
+    "detail_credit":{"linha": 8, "coluna_inicio": 45, "coluna_fim": 55},
+    "detail_debit":{"linha": 8, "coluna_inicio": 57, "coluna_fim": 67},
+    #Bottom payslip
+    "detail_credit":{"linha": 15, "coluna_inicio": 45, "coluna_fim": 55},
+    "detail_debit":{"linha": 15, "coluna_inicio": 57, "coluna_fim": 67},
+    "detail_liquid":{"linha": 16, "coluna_inicio": 57, "coluna_fim": 67},
+
+Crie depois a exportação do CSV deve conter na primeira linha o cabeçalho com o nome dos campos que é igual a chave da lista de campos. Campos sempre separados por ;
+As linhas postesteriores ao cabeçalho contem em cada linha um holerite e os campos com os valores capturados do TXT
+
+
+Create a Python script following these instructions below.
+The input txt file is at:
+input_file = 'data/MAR-2023.txt'
+The output cvs file will be in:
+output_file = 'data/output.csv'
+
+To know where each payslip starts a variable called marker. The marker variable contains the value that indicates where the payslip to be read begins.
+After identifying this marker, start reading each payslip to extract the information and insert it into the CSV.
+While finding the value in the marker variable, capture the payslip data from the TXT file
+
+Below are the fields and their positions in the TXT to be read and later exported to CSV.
+fields = {
+     #Head payslip
+     "header_company": {"line": 0, "column_start": 0, "column_end": 60},
+     "header_id_employee": {"line":4, "start_column": 0, "end_column": 6},
+     "header_employee": {"line": 4, "start_column": 7, "end_column": 44},
+     # Details payslip
+     "detail_description":{"line": 8, "column_beginning": 7, "column_end": 25},
+     "detail_credit":{"line": 8, "start_column": 45, "end_column": 55},
+     "detail_debit":{"line": 8, "column_beginning": 57, "column_end": 67},
+     #Bottom payslip
+     "detail_credit":{"line": 15, "start_column": 45, "end_column": 55},
+     "detail_debit":{"line": 15, "column_beginning": 57, "column_end": 67},
+     "detail_liquid":{"line": 16, "start_column": 57, "end_column": 67},
+
+Then create the CSV export that must contain the header with the name of the fields in the first line, which is the same as the key in the list of fields. Fields always separated by ;
+The lines after the header contain a payslip in each line and the fields with the values captured from the TXT
